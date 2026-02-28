@@ -7,6 +7,11 @@ class SERVICE_TYPE(Enum):
     OpenGym = 3
 
 
+class COST_TYPE(Enum):
+    PerHour = 1
+    PerSession = 2
+
+
 ACTIVITIES = [
     "Yoga",
     "Rollerblading",
@@ -19,7 +24,13 @@ ACTIVITIES = [
 
 
 class Service:
-    def __init__(self, name: str, type: SERVICE_TYPE, price: float):
+    def __init__(
+        self,
+        name: str,
+        type: SERVICE_TYPE,
+        price: float,
+        cost_type: COST_TYPE = COST_TYPE.PerHour,
+    ):
         # Check for valid data
         if name not in ACTIVITIES:
             raise ValueError(
@@ -31,7 +42,12 @@ class Service:
             )
         if price < 0:
             raise ValueError("Price cannot be negative")
+        if not isinstance(cost_type, COST_TYPE):
+            raise ValueError(
+                f"Invalid cost type: {cost_type}. Must be one of {COST_TYPE}"
+            )
 
         self.name = name
         self.type = type
         self.price = price
+        self.cost_type = cost_type

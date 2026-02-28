@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 from typing import List
 
-from services import Service
+from services import Service, SERVICE_TYPE, COST_TYPE
 
 
 class STATUS(Enum):
@@ -43,5 +43,13 @@ class Reservation:
         self.service = service
         self.date = date
         self.duration = duration
-        self.cost = service.price * duration
+        if service.cost_type == COST_TYPE.PerHour:
+            self.cost = service.price * duration
+        else:
+            self.cost = service.price
         self.status = status
+
+    def change_status(self, new_status: STATUS):
+        if not isinstance(new_status, STATUS):
+            raise ValueError(f"New status must be one of {STATUS}")
+        self.status = new_status
