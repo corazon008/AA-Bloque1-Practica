@@ -22,6 +22,7 @@ class Reservation:
         service: Service,
         date: datetime,
         duration: float,
+        cost: float = None,
         status: STATUS = STATUS.pending,
     ):
         # Check for valid data
@@ -43,13 +44,24 @@ class Reservation:
         self.service = service
         self.date = date
         self.duration = duration
-        if service.cost_type == COST_TYPE.PerHour:
-            self.cost = service.price * duration
+        if cost is None:
+            if service.cost_type == COST_TYPE.PerHour:
+                self.cost = service.price * duration
+            else:
+                self.cost = service.price
         else:
-            self.cost = service.price
+            self.cost = cost
         self.status = status
 
     def change_status(self, new_status: STATUS):
         if not isinstance(new_status, STATUS):
             raise ValueError(f"New status must be one of {STATUS}")
         self.status = new_status
+
+        # If cancellation happens less than 24 hours before the reservation, apply a penalty of 20%
+        if new_status == STATUS.cancelled and (
+            self.date - datetime.now() < pd.Timedelta(hours=24)
+        ):
+            self.cost *= 0.2
+        else:
+            self.cost = 0

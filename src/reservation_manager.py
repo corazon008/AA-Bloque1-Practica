@@ -1,3 +1,4 @@
+import re
 from enum import Enum
 from datetime import datetime
 from pathlib import Path
@@ -21,28 +22,39 @@ class ReservationManager:
         service: Service,
         date: datetime,
         duration: float,
-    ):
+    ) -> int:
         new_id = max((res.ID for res in self.reservations), default=0) + 1
         self.reservations.append(
             Reservation(new_id, name, service, date, duration)
         )
         self.save_reservations()
+        return new_id
 
-    def get_all_reservations(self):
+    def get_all_reservations(self) -> List[Reservation]:
         return self.reservations
 
-    def get_reservation_by_id(self, reservation_id: int):
+    def get_reservation_by_id(self, reservation_id: int) -> Reservation:
         for reservation in self.reservations:
             if reservation.ID == reservation_id:
                 return reservation
         return None
 
-    def get_all_profit(self):
+    def get_all_profit(self) -> float:
         return sum(
             reservation.cost
             for reservation in self.reservations
             if reservation.status == STATUS.confirmed
         )
+
+    def change_reservation_status(
+        self, reservation_id: int, new_status: STATUS
+    ) -> bool:
+        reservation = self.get_reservation_by_id(reservation_id)
+        if reservation:
+            reservation.change_status(new_status)
+            self.save_reservations()
+            return True
+        return False
 
     def load_reservations(self):
         if DB_PATH.exists():
@@ -59,6 +71,7 @@ class ReservationManager:
                     ),
                     date=datetime.strptime(row["date"], "%Y-%m-%d"),
                     duration=row["duration"],
+                    cost=row["cost"],
                     status=STATUS[row["status"]],
                 )
                 self.reservations.append(reservation)
@@ -77,6 +90,7 @@ class ReservationManager:
                     "service_cost_type": reservation.service.cost_type.name,
                     "date": reservation.date.strftime("%Y-%m-%d"),
                     "duration": reservation.duration,
+                    "cost": reservation.cost,
                     "status": reservation.status.name,
                 }
             )

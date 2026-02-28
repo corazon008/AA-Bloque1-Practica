@@ -1,6 +1,8 @@
 from datetime import datetime
+import pandas as pd
 from reservation import Reservation, STATUS
 from services import Service, SERVICE_TYPE
+import pytest
 
 service = Service(name="Yoga", type=SERVICE_TYPE.GroupClass, price=20.0)
 date = datetime.strptime("2024-07-01", "%Y-%m-%d")
@@ -105,3 +107,43 @@ def test_invalid_reservation_status():
         assert False, "Expected ValueError for invalid status"
     except ValueError as e:
         assert str(e) == f"Status must be one of {STATUS}"
+
+
+def test_change_status():
+    reservation = Reservation(
+        ID=1,
+        name="John Doe",
+        service=service,
+        date=date,
+        duration=3.0,
+    )
+    reservation.change_status(STATUS.confirmed)
+    assert reservation.status == STATUS.confirmed
+
+    try:
+        reservation.change_status("InvalidStatus")
+        assert False, "Expected ValueError for invalid new status"
+    except ValueError as e:
+        assert str(e) == f"New status must be one of {STATUS}"
+
+
+def test_penalty_on_cancellation():
+    reservation = Reservation(
+        ID=1,
+        name="John Doe",
+        service=service,
+        date=datetime.now() + pd.Timedelta(hours=23),  # Less than 24 hours away
+        duration=3.0,
+    )
+    reservation.change_status(STATUS.cancelled)
+    assert reservation.cost == 60.0 * 0.2  # 20% penalty applied
+
+    reservation = Reservation(
+        ID=2,
+        name="Jane Doe",
+        service=service,
+        date=datetime.now() + pd.Timedelta(hours=25),  # More than 24 hours away
+        duration=3.0,
+    )
+    reservation.change_status(STATUS.cancelled)
+    assert reservation.cost == 0.0  # No penalty applied
