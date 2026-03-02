@@ -1,9 +1,10 @@
-from reservation_manager import ReservationManager
-from services import Service, SERVICE_TYPE, COST_TYPE
-from reservation import STATUS
 from datetime import datetime
 import pandas as pd
 import pytest
+
+from src.reservation_manager import ReservationManager
+from src.services import Service, SERVICE_TYPE, COST_TYPE
+from src.reservation import STATUS
 
 
 def test_reservation_manager():

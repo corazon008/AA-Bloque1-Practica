@@ -5,8 +5,8 @@ from pathlib import Path
 import pandas as pd
 from typing import List
 
-from services import Service, SERVICE_TYPE, COST_TYPE
-from reservation import Reservation, STATUS
+from src.services import Service, SERVICE_TYPE, COST_TYPE
+from src.reservation import Reservation, STATUS
 
 DB_PATH = Path(__file__).parent / "reservations.csv"
 

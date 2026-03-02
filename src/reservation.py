@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 from typing import List
 
-from services import Service, SERVICE_TYPE, COST_TYPE
+from src.services import Service, SERVICE_TYPE, COST_TYPE
 
 
 class STATUS(Enum):
