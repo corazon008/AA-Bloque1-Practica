@@ -73,3 +73,37 @@ class Reservation:
             self.cost *= 0.2
         else:
             self.cost = 0
+
+    def to_dict(self):
+        return {
+            "ID": self.ID,
+            "name": self.name,
+            "service_name": self.service.name,
+            "service_type": self.service.type.name,
+            "service_price": self.service.price,
+            "service_cost_type": self.service.cost_type.name,
+            "date": self.date.strftime("%Y-%m-%d"),
+            "duration": self.duration,
+            "cost": self.cost,
+            "status": self.status.name,
+        }
+
+    @staticmethod
+    def from_dict(data: dict) -> "Reservation":
+        return Reservation(
+            ID=data["ID"],
+            name=data["name"],
+            service=Service(
+                name=data["service_name"],
+                type=SERVICE_TYPE[data["service_type"]],
+                price=data["service_price"],
+                cost_type=COST_TYPE[data["service_cost_type"]],
+            ),
+            date=datetime.strptime(data["date"], "%Y-%m-%d"),
+            duration=data["duration"],
+            cost=data["cost"],
+            status=STATUS[data["status"]],
+        )
+
+    def __str__(self):
+        return f"ID: {self.ID}, Name: {self.name}, Service: {self.service.name}, Date: {self.date.strftime('%Y-%m-%d')}, Duration: {self.duration}, Cost: {self.cost}, Status: {self.status.name}"

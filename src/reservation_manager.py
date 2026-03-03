@@ -9,10 +9,13 @@ from src.service import Service, SERVICE_TYPE, COST_TYPE
 from src.reservation import Reservation, STATUS
 
 DB_PATH = Path(__file__).parent / "reservations.csv"
+DB_PATH_TEST = Path(__file__).parent / "reservations_test.csv"
 
 
 class ReservationManager:
-    def __init__(self):
+    def __init__(self, test_mode: bool = False):
+        self.test_mode = test_mode
+        self.db_path = DB_PATH_TEST if test_mode else DB_PATH
         self.reservations: List[Reservation] = []
         self.load_reservations()
 
@@ -67,42 +70,16 @@ class ReservationManager:
         return False
 
     def load_reservations(self):
-        if DB_PATH.exists():
-            df = pd.read_csv(DB_PATH)
+        if self.db_path.exists():
+            df = pd.read_csv(self.db_path)
             for _, row in df.iterrows():
-                reservation = Reservation(
-                    ID=row["ID"],
-                    name=row["name"],
-                    service=Service(
-                        name=row["service_name"],
-                        type=SERVICE_TYPE[row["service_type"]],
-                        price=row["service_price"],
-                        cost_type=COST_TYPE[row["service_cost_type"]],
-                    ),
-                    date=datetime.strptime(row["date"], "%Y-%m-%d"),
-                    duration=row["duration"],
-                    cost=row["cost"],
-                    status=STATUS[row["status"]],
-                )
+                reservation = Reservation.from_dict(row)
                 self.reservations.append(reservation)
 
     def save_reservations(self):
         data = []
         self.reservations.sort(key=lambda r: r.ID)  # Ensure consistent order
         for reservation in self.reservations:
-            data.append(
-                {
-                    "ID": reservation.ID,
-                    "name": reservation.name,
-                    "service_name": reservation.service.name,
-                    "service_type": reservation.service.type.name,
-                    "service_price": reservation.service.price,
-                    "service_cost_type": reservation.service.cost_type.name,
-                    "date": reservation.date.strftime("%Y-%m-%d"),
-                    "duration": reservation.duration,
-                    "cost": reservation.cost,
-                    "status": reservation.status.name,
-                }
-            )
+            data.append(reservation.to_dict())
         df = pd.DataFrame(data)
-        df.to_csv(DB_PATH, index=False)
+        df.to_csv(self.db_path, index=False)

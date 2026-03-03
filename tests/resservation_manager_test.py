@@ -8,7 +8,7 @@ from src.reservation import STATUS
 
 
 def test_reservation_manager():
-    manager = ReservationManager()
+    manager = ReservationManager(test_mode=True)
     initial_count = len(manager.get_all_reservations())
 
     service = Service(name="Yoga", type=SERVICE_TYPE.GroupClass, price=20.0)
@@ -29,7 +29,7 @@ def test_reservation_manager():
 
 
 def test_penalty_on_cancellation():
-    manager = ReservationManager()
+    manager = ReservationManager(test_mode=True)
     service = Service(name="Yoga", type=SERVICE_TYPE.GroupClass, price=20.0)
     date = datetime.now() + pd.Timedelta(hours=23)  # Less than 24 hours away
     r_id = manager.new_reservation(
@@ -48,7 +48,7 @@ def test_penalty_on_cancellation():
     del manager
 
     # Check that the penalty is applied correctly even after reloading reservations
-    new_manager = ReservationManager()
+    new_manager = ReservationManager(test_mode=True)
     loaded_reservation = new_manager.get_reservation_by_id(r_id)
     assert loaded_reservation is not None
     assert loaded_reservation.cost == 8.0  # Penalty should persist after reload

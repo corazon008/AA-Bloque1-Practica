@@ -89,9 +89,8 @@ class Menu:
                         ),
                     )
                 case 2:
-                    raise NotImplementedError(
-                        "Viewing reservations not implemented yet."
-                    )
+                    for reservation in Menu.manager.get_all_reservations():
+                        print(reservation)
                 case 3:
                     raise NotImplementedError(
                         "Changing reservation status not implemented yet."
