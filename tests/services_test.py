@@ -1,4 +1,4 @@
-from src.services import Service, SERVICE_TYPE, ACTIVITIES
+from src.service import Service, SERVICE_TYPE, ACTIVITIES
 
 
 def test_service_creation():
