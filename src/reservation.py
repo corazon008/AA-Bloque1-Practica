@@ -25,6 +25,17 @@ class Reservation:
         cost: float = None,
         status: STATUS = STATUS.pending,
     ):
+        """
+        Initializes a new reservation.
+        Args:
+            ID (int): Unique identifier for the reservation.
+            name (str): Name of the reservation.
+            service (Service): Service associated with the reservation.
+            date (datetime): Date and time of the reservation.
+            duration (float): Duration of the reservation in hours or number of sessions, depending on the service's cost type.
+            cost (float, optional): Cost of the reservation. If not provided, it will be calculated based on the service and duration. Only use for restoring from CSV. Defaults to None.
+            status (STATUS, optional): Status of the reservation. Defaults to STATUS.pending.
+        """
         # Check for valid data
         if ID <= 0:
             raise ValueError("ID must be a positive integer")
@@ -45,10 +56,7 @@ class Reservation:
         self.date = date
         self.duration = duration
         if cost is None:
-            if service.cost_type == COST_TYPE.PerHour:
-                self.cost = service.price * duration
-            else:
-                self.cost = service.price
+            self.cost = service.price * duration
         else:
             self.cost = cost
         self.status = status

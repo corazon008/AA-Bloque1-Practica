@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 
 from src.reservation import Reservation, STATUS
-from src.service import Service, SERVICE_TYPE
+from src.service import Service, SERVICE_TYPE, COST_TYPE
 
 service = Service(name="Yoga", type=SERVICE_TYPE.GroupClass, price=20.0)
 date = datetime.strptime("2024-07-01", "%Y-%m-%d")
@@ -23,6 +23,43 @@ def test_reservation_creation():
     assert reservation.duration == 3.0
     assert reservation.status == STATUS.pending
     assert reservation.cost == 60.0
+
+
+def test_cost_calculation_per_hour():
+    reservation = Reservation(
+        ID=1,
+        name="John Doe",
+        service=service,
+        date=date,
+        duration=3.0,
+    )
+    assert reservation.cost == 60.0  # 20.0 per hour * 3 hours
+
+
+def test_cost_calculation_per_session():
+    service_session = Service(
+        name="Yoga",
+        type=SERVICE_TYPE.PersonalTraining,
+        price=50.0,
+        cost_type=COST_TYPE.PerSession,
+    )
+    reservation = Reservation(
+        ID=2,
+        name="Jane Doe",
+        service=service_session,
+        date=date,
+        duration=1.0,
+    )
+    assert reservation.cost == 50.0  # Fixed price regardless of duration
+
+    reservation = Reservation(
+        ID=2,
+        name="Jane Doe",
+        service=service_session,
+        date=date,
+        duration=2.0,
+    )
+    assert reservation.cost == 100
 
 
 def test_invalid_reservation_ID():

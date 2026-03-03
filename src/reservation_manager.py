@@ -23,6 +23,16 @@ class ReservationManager:
         date: datetime,
         duration: float,
     ) -> int:
+        """
+        Creates a new reservation and saves it to the CSV file.
+        Args:
+            name (str): Name of the reservation.
+            service (Service): Service associated with the reservation.
+            date (datetime): Date and time of the reservation.
+            duration (float): Duration of the reservation in hours or number of sessions, depending on the service's cost type.
+        Returns:
+            int: The ID of the newly created reservation.
+        """
         new_id = max((res.ID for res in self.reservations), default=0) + 1
         self.reservations.append(
             Reservation(new_id, name, service, date, duration)

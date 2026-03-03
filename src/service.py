@@ -51,3 +51,16 @@ class Service:
         self.type = type
         self.price = price
         self.cost_type = cost_type
+
+
+SERVICES: list[Service] = [
+    Service("Yoga", SERVICE_TYPE.GroupClass, 15.0, COST_TYPE.PerSession),
+    Service(
+        "Rollerblading", SERVICE_TYPE.PersonalTraining, 30.0, COST_TYPE.PerHour
+    ),
+    Service("Boxing", SERVICE_TYPE.GroupClass, 20.0, COST_TYPE.PerSession),
+    Service("Crossfit", SERVICE_TYPE.PersonalTraining, 40.0, COST_TYPE.PerHour),
+    Service("Zumba", SERVICE_TYPE.GroupClass, 10.0, COST_TYPE.PerSession),
+    Service("Pilates", SERVICE_TYPE.PersonalTraining, 25.0, COST_TYPE.PerHour),
+    Service("Spinning", SERVICE_TYPE.GroupClass, 12.0, COST_TYPE.PerSession),
+]

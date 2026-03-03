@@ -1,11 +1,20 @@
 from random import choices
 from typing import List
 import os, sys
+from datetime import datetime
+
+from src.reservation_manager import ReservationManager
+from src.service import SERVICES
 
 
 class Menu:
+
+    manager = ReservationManager()
+
     @staticmethod
-    def ask_choices(prompt: str, choices: List[str]) -> int:
+    def ask_choices(
+        prompt: str, choices: List[str], clear_term: bool = True
+    ) -> int:
         print(prompt)
         for i, choice in enumerate(choices, start=1):
             print(f"{i}. {choice}")
@@ -14,8 +23,9 @@ class Menu:
             try:
                 selection = int(input("Enter your choice: "))
                 if 1 <= selection <= len(choices):
-                    # Clear the console (works on Windows and Unix)
-                    os.system("cls" if os.name == "nt" else "clear")
+                    if clear_term:
+                        # Clear the console (works on Windows and Unix)
+                        os.system("cls" if os.name == "nt" else "clear")
                     return selection
                 else:
                     raise ValueError
@@ -26,7 +36,6 @@ class Menu:
     def main_menu():
         choices = [
             "Manage reservations",
-            "Manage services",
             "View profits",
             "Exit",
         ]
@@ -63,11 +72,32 @@ class Menu:
             )
             match selected_choice:
                 case 1:
-                    print("Creating a new reservation...")
+                    Menu.manager.new_reservation(
+                        name=input("Enter reservation name: "),
+                        service=SERVICES[
+                            Menu.ask_choices(
+                                "Select a service:",
+                                [service.name for service in SERVICES],
+                                clear_term=False,
+                            )
+                            - 1
+                        ],
+                        date=datetime.strptime(
+                            input("Enter reservation date (YYYY-MM-DD): "),
+                            "%Y-%m-%d",
+                        ),
+                        duration=float(
+                            input("Enter reservation duration (hours): ")
+                        ),
+                    )
                 case 2:
-                    print("Viewing all reservations...")
+                    raise NotImplementedError(
+                        "Viewing reservations not implemented yet."
+                    )
                 case 3:
-                    print("Changing reservation status...")
+                    raise NotImplementedError(
+                        "Changing reservation status not implemented yet."
+                    )
                 case 4:
                     Menu.main_menu()
         except KeyError:
@@ -75,12 +105,8 @@ class Menu:
             Menu.handle_reservation_menu()
 
     @staticmethod
-    def handle_service_menu():
-        print("Service Menu")
-
-    @staticmethod
     def handle_view_profits():
-        print("Viewing profits")
+        raise NotImplementedError("Viewing profits not implemented yet.")
 
     @staticmethod
     def handle_exit():
