@@ -5,6 +5,7 @@ from datetime import datetime
 
 from src.reservation_manager import ReservationManager
 from src.service import SERVICES
+from src.reservation import STATUS
 
 
 class Menu:
@@ -92,9 +93,35 @@ class Menu:
                     for reservation in Menu.manager.get_all_reservations():
                         print(reservation)
                 case 3:
-                    raise NotImplementedError(
-                        "Changing reservation status not implemented yet."
+                    # Ask to show all reservations first
+                    show_reservations = input(
+                        "Do you want to see all reservations before changing status? (y/n): "
+                    ).lower()
+                    if show_reservations in "yes":
+                        for reservation in Menu.manager.get_all_reservations():
+                            print(reservation)
+
+                    reservation_id = int(
+                        input("Enter reservation ID to change status: ")
                     )
+                    status_list = [status.name for status in STATUS]
+                    new_status = STATUS[
+                        status_list[
+                            Menu.ask_choices(
+                                "Select new status:",
+                                status_list,
+                                clear_term=False,
+                            )
+                            - 1
+                        ]
+                    ]
+                    if Menu.manager.change_reservation_status(
+                        reservation_id, new_status
+                    ):
+                        print("Reservation status updated successfully.")
+                    else:
+                        print("Reservation not found.")
+
                 case 4:
                     Menu.main_menu()
         except KeyError:
