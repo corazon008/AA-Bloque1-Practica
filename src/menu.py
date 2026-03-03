@@ -48,10 +48,8 @@ class Menu:
                 case 1:
                     Menu.handle_reservation_menu()
                 case 2:
-                    Menu.handle_service_menu()
-                case 3:
                     Menu.handle_view_profits()
-                case 4:
+                case 3:
                     Menu.handle_exit()
         except KeyError:
             print("Invalid choice. Please try again.")
