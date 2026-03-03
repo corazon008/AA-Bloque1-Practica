@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 
 from src.reservation_manager import ReservationManager
-from src.services import Service, SERVICE_TYPE, COST_TYPE
+from src.service import Service, SERVICE_TYPE, COST_TYPE
 from src.reservation import STATUS
 
 

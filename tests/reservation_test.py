@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 
 from src.reservation import Reservation, STATUS
-from src.services import Service, SERVICE_TYPE
+from src.service import Service, SERVICE_TYPE
 
 service = Service(name="Yoga", type=SERVICE_TYPE.GroupClass, price=20.0)
 date = datetime.strptime("2024-07-01", "%Y-%m-%d")
