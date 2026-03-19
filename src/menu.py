@@ -130,7 +130,11 @@ class Menu:
 
     @staticmethod
     def handle_view_profits():
-        raise NotImplementedError("Viewing profits not implemented yet.")
+        sum = 0
+        for reservation in Menu.manager.get_all_reservations():
+            if reservation.status in (STATUS.completed, STATUS.confirmed):
+                sum += reservation.cost
+        print(f"Total profits from completed reservations: {sum:.2f}")
 
     @staticmethod
     def handle_exit():
