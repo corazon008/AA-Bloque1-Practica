@@ -52,6 +52,13 @@ class ReservationManager:
                 return reservation
         return None
 
+    def get_reservations_by_status(self, status: STATUS) -> List[Reservation]:
+        return [
+            reservation
+            for reservation in self.reservations
+            if reservation.status == status
+        ]
+
     def get_all_profit(self) -> float:
         return sum(
             reservation.cost
