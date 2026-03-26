@@ -72,7 +72,7 @@ class Menu:
             match selected_choice:
                 case 1:
                     Menu.manager.new_reservation(
-                        name=input("Enter reservation name: "),
+                        client_name=input("Enter client name: "),
                         service=SERVICES[
                             Menu.ask_choices(
                                 "Select a service:",
@@ -82,8 +82,10 @@ class Menu:
                             - 1
                         ],
                         date=datetime.strptime(
-                            input("Enter reservation date (YYYY-MM-DD): "),
-                            "%Y-%m-%d",
+                            input(
+                                "Enter reservation date (YYYY-MM-DD HH:MM): "
+                            ),
+                            "%Y-%m-%d %H:%M",
                         ),
                         duration=float(
                             input("Enter reservation duration (hours): ")

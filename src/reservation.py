@@ -18,7 +18,7 @@ class Reservation:
     def __init__(
         self,
         ID: int,
-        name: str,
+        client_name: str,
         service: Service,
         date: datetime,
         duration: float,
@@ -39,8 +39,8 @@ class Reservation:
         # Check for valid data
         if ID <= 0:
             raise ValueError("ID must be a positive integer")
-        if not isinstance(name, str) or not name:
-            raise ValueError("Name must be a non-empty string")
+        if not isinstance(client_name, str) or not client_name:
+            raise ValueError("Client name must be a non-empty string")
         if not isinstance(service, Service):
             raise ValueError("Service must be an instance of Service class")
         if not isinstance(date, datetime):
@@ -51,12 +51,16 @@ class Reservation:
             raise ValueError(f"Status must be one of {STATUS}")
 
         self.ID = ID
-        self.name = name
+        self.name = client_name
         self.service = service
         self.date = date
         self.duration = duration
         if cost is None:
-            self.cost = service.price * duration
+            self.cost = (
+                service.price * duration
+                if duration == 1
+                else service.price * duration * 0.85
+            )  # Apply a 15% discount for reservations longer than 1 hour/session
         else:
             self.cost = cost
         self.status = status
@@ -92,7 +96,7 @@ class Reservation:
     def from_dict(data: dict) -> "Reservation":
         return Reservation(
             ID=data["ID"],
-            name=data["name"],
+            client_name=data["name"],
             service=Service(
                 name=data["service_name"],
                 type=SERVICE_TYPE[data["service_type"]],
@@ -106,4 +110,4 @@ class Reservation:
         )
 
     def __str__(self):
-        return f"ID: {self.ID}, Name: {self.name}, Service: {self.service.name}, Date: {self.date.strftime('%Y-%m-%d')}, Duration: {self.duration}, Cost: {self.cost}, Status: {self.status.name}"
+        return f"ID: {self.ID}, Client name: {self.name}, Service: {self.service.name}, Date: {self.date.strftime('%Y-%m-%d')}, Duration: {self.duration}, Cost: {self.cost}, Status: {self.status.name}"

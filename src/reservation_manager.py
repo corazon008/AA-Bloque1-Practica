@@ -21,7 +21,7 @@ class ReservationManager:
 
     def new_reservation(
         self,
-        name: str,
+        client_name: str,
         service: Service,
         date: datetime,
         duration: float,
@@ -38,7 +38,7 @@ class ReservationManager:
         """
         new_id = max((res.ID for res in self.reservations), default=0) + 1
         self.reservations.append(
-            Reservation(new_id, name, service, date, duration)
+            Reservation(new_id, client_name, service, date, duration)
         )
         self.save_reservations()
         return new_id
